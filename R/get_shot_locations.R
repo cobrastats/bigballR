@@ -2,6 +2,8 @@
 #' @export
 get_shot_locations <- function(gameids) {
 
+  gameids = gameids[!is.na(gameids)]
+
   process_game <- function(i) {
     url <- paste0("https://stats.ncaa.org/contests/", i, "/box_score")
     html <- scrape_dynamic_tables(url)
