@@ -47,8 +47,8 @@
 #' }
 #' @examples
 #' scrape_game(4674164)
-scrape_game <- function(game_id, session = NULL, save_file=F, use_file=F, base_path = NA, overwrite=F) {
 
+scrape_game <- function(game_id, session = NULL, save_file=F, use_file=F, base_path = NA, overwrite=F) {
   #track status of cleanliness of data for game
   status <- "CLEAN"
 
@@ -61,7 +61,6 @@ scrape_game <- function(game_id, session = NULL, save_file=F, use_file=F, base_p
   file_dir <- paste0(base_path, "play_by_play/")
   file_path <- paste0(file_dir, game_id, ".html")
   isUrlRead <- F
-
 
   # Give user option to save raw html file (to make future processing more efficient)
   if (save_file & !is.na(base_path) & (!file.exists(file_path) | overwrite)) {
@@ -185,7 +184,7 @@ scrape_game <- function(game_id, session = NULL, save_file=F, use_file=F, base_p
     x[1]
   }))
 
-  # Data begins formatted with away team events in one column and home team events in another
+      # Data begins formatted with away team events in one column and home team events in another
   # With the formatting in use, there can never be a home and away event at the same time
   # This allows the home and away events to be merged into an events column
   player1_h <- game[, 4]
@@ -474,7 +473,10 @@ scrape_game <- function(game_id, session = NULL, save_file=F, use_file=F, base_p
   # 1. If a number is used for a substitution
   # 2. If TEAM is used
   # 3. If a team name is used
-  invalid_sub <- any(grepl(paste0("\\.[0-9]+|\\.TEAM|",toupper(home_team),"|", toupper(away_team)), player_subs))
+
+  invalid_sub <- any(grepl("\\.[0-9]+", player_subs) |
+                       grepl("\\.TEAM$", player_subs) |
+                       grepl(paste0("^\\.?(", toupper(home_team), "|", toupper(away_team), ")$"), player_subs))
 
   # Now Check to See if Players Were Recorded in the Game
   if (length(unique(dirty_game$Player_1)) == 1 | invalid_sub | length(player_subs) == 0) {
